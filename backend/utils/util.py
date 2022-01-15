@@ -11,7 +11,7 @@ def lifter(ct: docker.models.containers.Container) -> dict:
             "state": ct.attrs["State"],
             "name": ct.attrs["Name"],
             "id": ct.attrs["Id"],
-            "image": Photograph.name(ct.attrs["Image"]),
+            "image": Photograph.name(ct.attrs["Image"])[0],
         }
     )
 
@@ -30,9 +30,9 @@ class Photograph:
     """handles docker images"""
 
     @staticmethod
-    def name(img: str, prefix: bool = True) -> dict:
+    def name(img: str, prefix: bool = True) -> tuple:
         """returns image name"""
         if prefix:
             img = img[7:]
         img: docker.models.images.Image = client().images.get(img)
-        return {"name": img.attrs["RepoTags"][0], "id": img.attrs["Id"]}
+        return (img.attrs["RepoTags"][0], img.attrs["Id"])
